@@ -8,7 +8,7 @@ from config import holidays_loc
 from config import parameters
 from config import Api_url
 
-#Variable to keep running the main_menu program
+#Variable to keep running the main_menu program and see if changes were made
 keep_running = True
 have_there_been_changes = False
 
@@ -42,7 +42,6 @@ class HolidayList:
        self.innerHolidays = []
 
     def addHoliday(self,holidayObj):
-       # Make sure holidayObj is an Holiday Object by checking the type
         # Use innerHolidays.append(holidayObj) to add holiday
         #Check if the holiday is already in the list
         is_holiday_in_list = holidayObj in self.innerHolidays
@@ -91,7 +90,7 @@ class HolidayList:
         holidays_file_json = json.loads(holidays_file)
         #Create Holiday Object
         for i in holidays_file_json['holidays']:
-        # Use addHoliday function to add holidays to inner list.
+        # add holidays to inner list.
             holiday_object = Holiday(i['name'],i['date'])
             self.innerHolidays.append(holiday_object)
             
@@ -185,13 +184,13 @@ class HolidayList:
         
         # Format weather information and return weather string.
         weather_response = requests.get(f'{Api_url}/{starting_week_day}/{ending_week_day}', params=parameters).text
-        weather_respone_json = json.loads(weather_response)
+        weather_response_json = json.loads(weather_response)
         weather_day_list_of_dict = []
 
-        for i in range(len(weather_respone_json['days'])):
+        for i in range(len(weather_response_json['days'])):
             weather_day_dict = {}
-            weather = weather_respone_json['days'][i]['icon']
-            weather_day = weather_respone_json['days'][i]['datetime']
+            weather = weather_response_json['days'][i]['icon']
+            weather_day = weather_response_json['days'][i]['datetime']
             weather_day_dict['day'] = weather_day
             weather_day_dict['weather'] = weather
             weather_day_list_of_dict.append(weather_day_dict)
@@ -209,7 +208,7 @@ class HolidayList:
         if display_weather == 'y':
             dict_of_weather = self.getWeather(current_week,current_year)
 
-            #Check to see if holiday date is the same as weather date, print if yes
+            #Check to see if holiday date is the same as weather date, print holiday and weather
             print(f"\n These are the holidays for this week: \n ======================================")
             for p in list_of_current_holidays:
                 for i in range(len(dict_of_weather)):
@@ -217,7 +216,7 @@ class HolidayList:
                         print(f"{p['name']} ({p['date']}) - {dict_of_weather[i]['weather']}")
 
 
-            
+           # If user doesn't want to see the weather, print only the holidays 
         else:
             self.displayHolidaysInWeek(list_of_current_holidays)
 
@@ -244,7 +243,7 @@ class HolidayList:
 
             try:
                 user_input = int(input('Select menu option [1-5]:'))
-                u = int(user_input)
+                int(user_input)
                 if user_input >= 1 and user_input <6:
                     is_user_input_an_int = True
                 else:
@@ -256,7 +255,7 @@ class HolidayList:
         return user_input
 
     def run_main_menu_selection(self, user_input):
-
+        # Add a holiday
         if user_input == 1:
             keep_selection_running = True
             while keep_selection_running == True:
@@ -280,6 +279,7 @@ class HolidayList:
                 if want_to_keep_running == 'n':
                     keep_selection_running = False
 
+        # Remove a holiday
         elif user_input ==2:
             keep_selection_running = True
             while keep_selection_running == True:
@@ -292,7 +292,7 @@ class HolidayList:
                 if want_to_keep_running == 'n':
                     keep_selection_running = False
                
-
+        #Save holiday list
         elif user_input ==3:
             keep_selection_running = True
             while keep_selection_running == True:
@@ -307,18 +307,22 @@ class HolidayList:
                     want_to_keep_running = str(input("\nWant to continue to save changes? [y/n]: "))
                     if want_to_keep_running == 'n':
                         keep_selection_running = False
-
+        # View holidays
         elif user_input ==4:
             keep_selection_running = True
             while keep_selection_running == True:
                 print("View Holidays \n =============")
+                # Get input for holiday year and week number
                 holiday_year = str(input("Which Year?: "))
                 holiday_week = str(input("Which Week? #[1-52, Leave blank for the current week]: "))
+
+                #If holiday week is blank, view current week
                 if holiday_week == "":
                     self.viewCurrentWeek()
                     want_to_keep_running = str(input("\nWant to continue viewing holidays [y/n]: "))
                     if want_to_keep_running == 'n':
                         keep_selection_running = False
+                # If holiday week is not blank, view the desired selection
                 else:
                     holidays = self.filter_holidays_by_week(holiday_year,holiday_week)
                     print(f"\n These are the holidays for {holiday_year} week #{holiday_week} \n ======================================")
@@ -326,15 +330,20 @@ class HolidayList:
                     want_to_keep_running = str(input("\nWant to continue viewing holidays [y/n]: "))
                     if want_to_keep_running == 'n':
                         keep_selection_running = False
+        # exit the program, 
         elif user_input ==5:
             print("Exit \n =============")
             global have_there_been_changes
+
+            # if changes were not made, run this prompt
             if have_there_been_changes == False:
                 exit = str(input("Are you sure you want to exit? [y/n]: "))
                 if exit == 'y':
                     global keep_running 
                     keep_running = False
                     print('Goodbye!')
+
+            # If changes were made, run this prompt
             else:
                 print("Are you sure you want to exit? \n Your changes will be lost.")
                 exit = str(input("[y/n]: "))
@@ -342,6 +351,7 @@ class HolidayList:
                     keep_running = False
                     print('Goodbye!')
 
+        # If an invalid input is typed, try again (backup data validation in case the first fails)
         else:
             print("Invalid input, please try again")
         
