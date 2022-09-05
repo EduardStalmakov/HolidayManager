@@ -1,6 +1,7 @@
 # Census API Data- Annual Business Survey 2019
 ## Table of Contents
-* [Introduction](#introduction)
+* [Introduction](#Introduction)
+* [Visuals](#Visuals)
 
 
 # Introduction
@@ -9,3 +10,5 @@ This project uses data gathered from the [U.S. Census Bureau’s Annual Business
 [View our Presentation](https://docs.google.com/presentation/d/1WutSR1Dwtx_6uWYGedaDQSpv1CQMOPqWjjURKrt36Jg/edit?usp=sharing)
 
 [View our Project Report](https://docs.google.com/document/d/1ZHFal6RjUJfD8Rb6ciDHICtxff8mbLKkd7xuRR6WHIc/edit?usp=sharing)
+
+# Visuals
