@@ -13,4 +13,5 @@ This project uses data gathered from the [U.S. Census Bureau’s Annual Business
 
 
 # Questions
-## How does firm payroll differ by educational attainment and race of the business owner?
+How does firm payroll differ by educational attainment and race of the business owner?
+
